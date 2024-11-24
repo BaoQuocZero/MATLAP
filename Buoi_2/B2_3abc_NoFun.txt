@@ -1,0 +1,53 @@
+% Đọc ảnh xám
+i = imread('Fig0316(4)(bottom_left).tif');
+
+% Kiểm tra nếu ảnh là RGB, chuyển sang ảnh xám
+if size(i, 3) == 3
+    i = rgb2gray(i);
+end
+
+% Kích thước ảnh
+[N, M] = size(i); %N số dòng, M số cột
+L = 256;  % Số mức xám
+
+% Bước 1: Tính histogram gốc
+hist_orig = zeros(1, L); %Số lần xuất hiện của 1 mức xám cụ thể
+for x = 1:N
+    for y = 1:M
+        hist_orig(i(x, y) + 1) = hist_orig(i(x, y) + 1) + 1;
+    end
+end
+
+% Bước 2: Tính hàm tích lũy xác suất (CDF)
+cdf = zeros(1, L); %Tổng mức xám tích lũy từ 0 đến k
+cdf(1) = hist_orig(1);
+for k = 2:L
+    cdf(k) = cdf(k-1) + hist_orig(k);
+end
+cdf = cdf / (N * M);  % Chuẩn hóa CDF, sau khi chuẩn hóa ta có tỷ lệ xuất hiện của 1 mức xám cụ thể
+
+% Bước 3: Ánh xạ mức xám mới
+s = round(cdf * (L - 1));  % Ánh xạ CDF vào khoảng 0–255, Hàm round được sử dụng để làm tròn kết quả về số nguyên
+
+% Bước 4: Tạo ảnh sau cân bằng
+i_equalized = zeros(N, M, 'uint8');
+for x = 1:N
+    for y = 1:M
+        i_equalized(x, y) = s(i(x, y) + 1);
+    end
+end
+
+% Tính histogram sau cân bằng
+hist_equalized = zeros(1, L);
+for x = 1:N
+    for y = 1:M
+        hist_equalized(i_equalized(x, y) + 1) = hist_equalized(i_equalized(x, y) + 1) + 1;
+    end
+end
+
+% Hiển thị kết quả
+figure;
+subplot(2, 2, 1); imshow(i); title('Ảnh gốc');
+subplot(2, 2, 2); bar(0:L-1, hist_orig); title('Histogram gốc');
+subplot(2, 2, 3); imshow(i_equalized); title('Ảnh sau cân bằng');
+subplot(2, 2, 4); bar(0:L-1, hist_equalized); title('Histogram sau cân bằng');

@@ -1,0 +1,44 @@
+% 1. ??c ?nh f
+i = imread('Fig0333(a)(test_pattern_blurring_orig).tif');  % ??c ?nh i
+
+% N?u ?nh là ?nh màu, chuy?n thành ?nh xám
+if size(i, 3) == 3
+    i = rgb2gray(i);  % Chuy?n ?nh màu thành ?nh xám
+end
+
+% 2. Xây d?ng m?t n? l?c w (m?t n? 3x3 v?i m?i ph?n t? = 1/9)
+w = ones(3, 3) / 9;  % M?t n? l?c v?i t?ng các ph?n t? b?ng 9
+
+% 3. Kích th??c ?nh
+[M, N] = size(i);  % Kích th??c ?nh ??u vào
+g = zeros(M, N);   % Kh?i t?o ?nh ??u ra
+
+% 4. Áp d?ng l?c th? công (dùng Correlation ho?c Convolution)
+% L?p qua t?t c? các pixel c?a ?nh i
+for row = 1:M
+    for col = 1:N
+        % L?y m?t vùng 3x3 xung quanh pixel (row, col)
+        % L?y các biên ?nh: m? r?ng biên b?ng 'replicate'
+        row_start = max(row-1, 1);
+        row_end = min(row+1, M);
+        col_start = max(col-1, 1);
+        col_end = min(col+1, N);
+        
+        % C?t ra vùng con (sub-matrix) 3x3
+        region = i(row_start:row_end, col_start:col_end);
+        
+        % M? r?ng biên n?u c?n (replicate)
+        if row_start == 1 || row_end == M || col_start == 1 || col_end == N
+            region = padarray(region, [1, 1], 'replicate');
+        end
+        
+        % Th?c hi?n phép Correlation (ho?c Convolution) b?ng tích gi?a vùng con và m?t n?
+        g(row, col) = sum(sum(region .* w));  % Tính t?ng các tích gi?a m?t n? và vùng ?nh
+        
+    end
+end
+
+% 5. Hi?n th? ?nh g (k?t qu? l?c)
+figure;
+subplot(1, 2, 1), imshow(i), title('?nh g?c');
+subplot(1, 2, 2), imshow(uint8(g)), title('?nh sau khi l?c');
