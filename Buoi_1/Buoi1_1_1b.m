@@ -49,7 +49,3 @@ figure;
 subplot(1, 3, 1); imshow(I); title('?nh g?c');
 subplot(1, 3, 2); imshow(I1); title('?nh sau khi c?ng 25');
 subplot(1, 3, 3); imshow(I2); title('?nh sau khi tr? 25');
-
-
-
-

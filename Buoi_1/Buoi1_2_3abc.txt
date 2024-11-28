@@ -1,0 +1,40 @@
+% Đọc ảnh
+I = imread('Fig0316(4)(bottom_left).tif');
+
+% Hiển thị ảnh gốc
+figure;
+imshow(I);
+title('Ảnh gốc');
+
+% Tính toán histogram (lược đồ xám)
+[counts, grayLevels] = imhist(I);
+
+% Hiển thị histogram
+figure;
+bar(grayLevels, counts);
+xlabel('Mức xám');
+ylabel('Số lượng pixel');
+title('Lược đồ xám của ảnh gốc');
+
+% Cân bằng lược đồ xám của ảnh
+I_eq = histeq(I);
+
+% Hiển thị ảnh gốc và ảnh đã cân bằng
+figure;
+subplot(1, 2, 1);
+imshow(I);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(I_eq);
+title('Ảnh sau khi cân bằng mức xám');
+
+% Hiển thị histogram của ảnh gốc và ảnh đã cân bằng
+figure;
+subplot(1, 2, 1);
+imhist(I);
+title('Histogram của ảnh gốc');
+
+subplot(1, 2, 2);
+imhist(I_eq);
+title('Histogram của ảnh sau khi cân bằng');
