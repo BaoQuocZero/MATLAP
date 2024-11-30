@@ -1,0 +1,23 @@
+% Đọc ảnh có nhiễu muối tiêu
+img = imread('Fig0335(a)(ckt_board_saltpep_prob_pt05).tif'); % Ảnh mức xám
+
+% Hiển thị ảnh gốc
+figure;
+imshow(img);
+title('Ảnh gốc với nhiễu muối tiêu');
+
+% Tạo kernel lọc tuyến tính (3x3)
+kernel = ones(3, 3) / 9; % Kernel trung bình (Mean Filter)
+
+% Áp dụng lọc tuyến tính với kernel
+filtered_img = imfilter(img, kernel, 'replicate'); % Tùy chọn 'replicate' để xử lý biên
+
+% Hiển thị ảnh sau lọc
+figure;
+subplot(1, 2, 1);
+imshow(img);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(filtered_img);
+title('Ảnh sau lọc tuyến tính (Kernel 3x3)');

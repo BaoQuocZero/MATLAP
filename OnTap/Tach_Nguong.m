@@ -1,0 +1,12 @@
+% ??c ?nh g?c
+img = imread('cameraman.tif');
+
+% Tách ng??ng
+T = 100; % Ng??ng (giá tr? m?c xám)
+threshold_img = img > T; % Tách ng??ng thành ?nh nh? phân 
+% Pixel l?n h?n ho?c b?ng T ???c ??t thành 1 (ho?c giá tr? t?i ?a), các pixel khác là 0.
+
+% Hi?n th? ?nh
+figure;
+subplot(1, 2, 1), imshow(img), title('?nh g?c');
+subplot(1, 2, 2), imshow(threshold_img), title(['?nh tách ng??ng (T = ', num2str(T), ')']);
