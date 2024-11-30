@@ -12,7 +12,7 @@ gaussian_kernel = fspecial('gaussian', [3 3], 0.5);
 % Áp dụng lọc Gaussian
 filtered_img_gaussian = imfilter(img, gaussian_kernel, 'replicate');
 
-% Hiển thị ảnh sau lọc
+% Hiển thị ảnh sau lọc gaussian
 figure;
 subplot(1, 2, 1);
 imshow(img);
