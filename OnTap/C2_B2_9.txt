@@ -1,0 +1,17 @@
+i = imread('Fig0333(a)(test_pattern_blurring_orig).tif');  % Đọc ảnh từ file và lưu vào biến i
+
+% Nếu ảnh là ảnh màu, chuyển thành ảnh xám (grayscale)
+if size(i, 3) == 3
+    i = rgb2gray(i);  % Chuyển ảnh màu thành ảnh xám
+end
+
+% Xây dựng một bộ lọc w (bộ lọc 3x3 với mỗi phần tử bằng 1/9)
+w = ones(3, 3) / 9;  % Bộ lọc trung bình 3x3 (các phần tử đều có giá trị bằng 1/9)
+
+% Áp dụng lọc tuyến tính (dùng Correlation hoặc Convolution)
+g = imfilter(i, w, 'corr', 'replicate', 'same');  % Lọc với Correlation, biên 'replicate', kích thước 'same'
+
+% Hiển thị ảnh gốc và ảnh sau khi lọc
+figure;
+subplot(1, 2, 1), imshow(i), title('Ảnh gốc');
+subplot(1, 2, 2), imshow(g), title('Ảnh sau khi lọc');

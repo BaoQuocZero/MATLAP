@@ -1,0 +1,18 @@
+% Bước 1: Đọc ảnh cameraman.tif
+I = imread('cameraman.tif');  % Đọc ảnh gốc
+
+% Bước 2: Ghi ảnh dưới định dạng JPEG và PNG
+imwrite(I, 'Ijpg.jpg', 'jpg');  % Ghi ảnh dưới dạng JPEG
+imwrite(I, 'Ipng.png', 'png');  % Ghi ảnh dưới dạng PNG
+
+% Bước 3: Đọc lại ảnh JPEG và PNG
+Ijpg = imread('Ijpg.jpg');  % Đọc ảnh JPEG
+Ipng = imread('Ipng.png');  % Đọc ảnh PNG
+
+% Bước 4: Trừ ảnh JPEG và PNG để so sánh sự khác biệt
+diff = Ijpg - Ipng;  % Trừ pixel của ảnh JPEG và PNG
+
+% Hiển thị sự khác biệt
+imagesc(diff);  % Hiển thị sự khác biệt giữa hai ảnh
+title('Sự khác biệt giữa ảnh JPEG và PNG');
+colorbar;

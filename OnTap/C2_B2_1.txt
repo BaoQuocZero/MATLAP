@@ -1,0 +1,43 @@
+% Bước 1: Đọc ảnh
+r = imread('Fig0304(a)(breast_digital_Xray).tif');  % Đọc ảnh đa mức xám
+
+% Bước 2: Phân tích sự phân bố mức xám của ảnh r
+L = 256;  % Số cấp mức xám (8-bit ảnh)
+sa = L - 1 - r;  % Biến đổi âm bản ảnh
+
+% Bước 3: Chuyển đổi ảnh thành ảnh nhị phân với ngưỡng t = 127
+t = 127;  % Ngưỡng
+bw = r >= t;  % Tạo ảnh nhị phân: pixel > t là 1, pixel < t là 0
+
+% Hiển thị các ảnh trong cùng một cửa sổ
+figure;
+
+% Ảnh gốc
+subplot(2,3,1);  % Chia cửa sổ thành 2 hàng, 3 cột, hiển thị ảnh gốc ở vị trí 1
+imshow(r);
+title('Ảnh gốc');
+
+% Lược đồ mức xám của ảnh gốc
+subplot(2,3,2);  % Hiển thị lược đồ mức xám của ảnh gốc
+imhist(r);
+title('Lược đồ mức xám của ảnh gốc');
+
+% Ảnh âm bản
+subplot(2,3,3);  % Hiển thị ảnh âm bản ở vị trí 3
+imshow(sa);
+title('Ảnh âm bản');
+
+% Lược đồ mức xám của ảnh âm bản
+subplot(2,3,4);  % Hiển thị lược đồ mức xám của ảnh âm bản
+imhist(sa);
+title('Lược đồ mức xám của ảnh âm bản');
+
+% Ảnh nhị phân
+subplot(2,3,5);  % Hiển thị ảnh nhị phân ở vị trí 5
+imshow(bw);
+title('Ảnh nhị phân');
+
+% Lược đồ mức xám của ảnh nhị phân (Nếu cần)
+subplot(2,3,6);  % Hiển thị lược đồ mức xám của ảnh nhị phân
+imhist(bw);
+title('Lược đồ mức xám của ảnh nhị phân');
