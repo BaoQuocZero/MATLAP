@@ -1,0 +1,9 @@
+% Tạo ảnh ví dụ (Ảnh đa cấp xám)
+img = [100 150 200; 50 75 125; 10 20 30];
+
+% Gọi hàm B2_ex
+[averageVal, computationTime] = b3_4(img);
+
+% Hiển thị kết quả
+fprintf('Giá trị trung bình cộng của ảnh là: %.2f\n', averageVal);
+fprintf('Thời gian tính toán là: %.4f giây\n', computationTime);
