@@ -1,7 +1,0 @@
-r = imread('Fig0304(a)(breast_digital_Xray).tif')
-imshow(r);
-
-figure;
-subplot(1,2,1);
-histogram(r(:),0:255,'FaceColor','k');
-title('Histo');
