@@ -1,0 +1,6 @@
+% ??c ?nh t? t?p
+image = imread('cdata.png'); 
+
+% Hi?n th? hình ?nh
+imshow(image);
+title('Hình ?nh ban ??u');

@@ -1,0 +1,50 @@
+function [computationTime, imgPrewitt] = Prewitt(img)
+% Bắt đầu đo thời gian
+    t = tic;
+    % Kiểm tra xem ảnh có phải ảnh màu hay không và chuyển sang ảnh xám nếu cần
+    if size(img, 3) == 3
+        img = rgb2gray(img); % Chuyển ảnh màu sang ảnh xám
+    end
+
+    % Chuyển ảnh sang kiểu double để dễ dàng tính toán
+    img = double(img);
+
+    % Lấy kích thước của ảnh
+    [numRows, numCols] = size(img);
+
+    % Bộ lọc Prewitt theo hướng X và Y
+    prewitt_x = [-1 0 1; -1 0 1; -1 0 1];  % Bộ lọc Prewitt theo hướng X
+    prewitt_y = [-1 -1 -1; 0 0 0; 1 1 1];  % Bộ lọc Prewitt theo hướng Y
+
+    % Khởi tạo ảnh đầu ra
+    edge_prewitt = zeros(numRows, numCols);
+
+    % Bán kính của bộ lọc (1 pixel cho bộ lọc 3x3)
+    radius = 1;
+
+    % Duyệt qua ảnh (trừ biên)
+    for r = radius+1 : numRows-radius
+        for c = radius+1 : numCols-radius
+            % Cắt cửa sổ 3x3 quanh pixel (r, c)
+            window = img(r-1:r+1, c-1:c+1);
+
+            % Áp dụng bộ lọc Prewitt theo hướng X và Y
+            gradient_x = sum(sum(window .* prewitt_x));  % Gradient theo hướng X
+            gradient_y = sum(sum(window .* prewitt_y));  % Gradient theo hướng Y
+
+            % Tính độ lớn gradient (magnitude)
+            edge_prewitt(r, c) = sqrt(gradient_x^2 + gradient_y^2);
+        end
+    end
+
+    % Chuyển đổi ảnh đầu ra về kiểu uint8 nếu cần
+    edge_prewitt = uint8(edge_prewitt);
+
+    % Hiển thị kết quả
+    imshow(edge_prewitt);
+    title('Edge Detection using Prewitt Filter');
+    
+    % Dừng đo thời gian và lưu kết quả
+    imgPrewitt = edge_prewitt;
+    computationTime = toc(t);
+end

@@ -1,0 +1,32 @@
+% Đọc ảnh cell.tif
+I = imread('cell.tif');
+imshow(I); % Hiển thị ảnh gốc
+title('Ảnh gốc');
+
+% Lấy giá trị pixel tại vị trí (100,20)
+x = 100; y = 20;
+pixel_value = I(x, y);
+fprintf('Giá trị pixel ban đầu tại (%d, %d): %d\n', x, y, pixel_value);
+
+% Cộng 25 vào giá trị pixel
+I_plus = I; % Tạo bản sao ảnh
+I_plus(x, y) = I_plus(x, y) + 25;
+
+% Trừ 25 từ giá trị pixel
+I_minus = I; % Tạo bản sao ảnh
+I_minus(x, y) = I_minus(x, y) - 25;
+
+% Hiển thị ảnh sau khi thay đổi
+figure;
+subplot(1, 3, 1);
+imshow(I); title('Ảnh gốc');
+
+subplot(1, 3, 2);
+imshow(I_plus); title('Ảnh sau khi +25');
+
+subplot(1, 3, 3);
+imshow(I_minus); title('Ảnh sau khi -25');
+
+% Hiển thị giá trị pixel sau khi thay đổi
+fprintf('Giá trị pixel sau khi +25 tại (%d, %d): %d\n', x, y, I_plus(x, y));
+fprintf('Giá trị pixel sau khi -25 tại (%d, %d): %d\n', x, y, I_minus(x, y));

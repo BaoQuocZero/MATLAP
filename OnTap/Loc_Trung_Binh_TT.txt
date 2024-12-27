@@ -1,0 +1,24 @@
+% Đọc ảnh gốc (mức xám)
+img = imread('Fig0335(a)(ckt_board_saltpep_prob_pt05).tif'); % Ảnh mức xám
+
+% Tạo kernel lọc trung bình (3x3)
+kernel = ones(3, 3) / 9;
+
+% Lọc trung bình
+filtered_img = imfilter(img, kernel, 'replicate');
+
+% Hiển thị kết quả
+figure;
+subplot(1, 2, 1), imshow(img), title('Ảnh gốc');
+subplot(1, 2, 2), imshow(filtered_img), title('Ảnh sau lọc trung bình (3x3)');
+
+Lọc trung bình tuyến tính (Mean Filtering):
+Lọc trung bình tuyến tính là một kỹ thuật xử lý ảnh dùng để làm mịn (blur) và giảm nhiễu trong ảnh. Lọc này hoạt động bằng cách thay thế mỗi giá trị pixel bằng giá trị trung bình của các pixel xung quanh nó trong một cửa sổ kích thước xác định.
+
+Cách hoạt động:
+Chọn một cửa sổ (kernel) 
+𝑛 × 𝑛 n×n, ví dụ: 3 × 3 3×3, 5 × 5 5×5,...
+Duyệt qua từng pixel của ảnh:
+Tính trung bình các giá trị pixel nằm trong cửa sổ.
+Thay thế giá trị của pixel trung tâm bằng giá trị trung bình vừa tính.
+Kết quả: Một ảnh mịn hơn và ít nhiễu hơn.

@@ -1,0 +1,35 @@
+% Đọc ảnh đầu vào
+image = imread('Fig0335(a)(ckt_board_saltpep_prob_pt05).tif'); % Thay bằng đường dẫn ảnh của bạn
+if size(image, 3) == 3
+    image = rgb2gray(image); % Chuyển ảnh màu sang thang xám nếu cần
+end
+
+% Yêu cầu người dùng nhập mặt nạ bộ lọc Lowpass
+prompt = 'Nhập kích thước mặt nạ bộ lọc (ví dụ: [3 3] tức 3x3): ';
+mask_size = input(prompt);
+
+prompt = 'Nhập giá trị các phần tử trong mặt nạ, cách nhau bằng khoảng trắng (ví dụ: [1 1 1; 1 1 1; 1 1 1]): ';
+mask_values = input(prompt);
+
+% Kiểm tra mặt nạ hợp lệ
+if numel(mask_values) ~= prod(mask_size)
+    error('Số lượng giá trị không khớp với kích thước mặt nạ. Vui lòng kiểm tra lại.');
+end
+
+% Chuyển mặt nạ thành ma trận và chuẩn hóa
+kernel = reshape(mask_values, mask_size);
+kernel = kernel / sum(kernel(:));
+
+% Áp dụng bộ lọc Lowpass
+filtered_image = imfilter(image, kernel, 'same');
+
+% Hiển thị ảnh gốc và ảnh đã lọc
+figure;
+
+subplot(1, 2, 1);
+imshow(image);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(filtered_image);
+title('Ảnh sau khi lọc');

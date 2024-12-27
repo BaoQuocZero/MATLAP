@@ -1,0 +1,23 @@
+% Đọc ảnh với nhiễu muối tiêu
+img = imread('Fig0335(a)(ckt_board_saltpep_prob_pt05).tif');
+
+% Hiển thị ảnh gốc
+figure;
+imshow(img);
+title('Ảnh gốc với nhiễu muối tiêu');
+
+% Tạo bộ lọc Gaussian (3x3, sigma=0.5)
+gaussian_kernel = fspecial('gaussian', [3 3], 0.5);
+
+% Áp dụng lọc Gaussian
+filtered_img_gaussian = imfilter(img, gaussian_kernel, 'replicate');
+
+% Hiển thị ảnh sau lọc gaussian
+figure;
+subplot(1, 2, 1);
+imshow(img);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(filtered_img_gaussian);
+title('Ảnh sau lọc Gaussian (3x3)');

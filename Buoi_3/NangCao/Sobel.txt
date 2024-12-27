@@ -1,0 +1,47 @@
+function [computationTime, imgSobel] = Sobel(img)
+% Bắt đầu đo thời gian
+    t = tic;
+    % Kiểm tra xem ảnh có phải ảnh màu hay không và chuyển sang ảnh xám nếu cần
+    if size(img, 3) == 3
+        img = rgb2gray(img); % Chuyển ảnh màu sang ảnh xám
+    end
+
+    % Chuyển ảnh sang kiểu double để dễ dàng tính toán
+    img = double(img);
+
+    % Kích thước của ảnh
+    [numRows, numCols] = size(img);
+
+    % Bộ lọc Sobel theo hướng X và Y
+    sobel_x = [-1 0 1; -2 0 2; -1 0 1];  % Bộ lọc Sobel theo hướng X
+    sobel_y = [-1 -2 -1; 0 0 0; 1 2 1];  % Bộ lọc Sobel theo hướng Y
+
+    % Khởi tạo ảnh đầu ra
+    edge_sobel = zeros(numRows, numCols);
+
+    % Bán kính của bộ lọc (1 pixel cho bộ lọc 3x3)
+    radius = 1;
+
+    % Duyệt qua ảnh (trừ biên)
+    for r = radius+1 : numRows-radius
+        for c = radius+1 : numCols-radius
+            % Cắt cửa sổ 3x3 quanh pixel (r, c)
+            window = img(r-1:r+1, c-1:c+1);
+
+            % Áp dụng bộ lọc Sobel theo hướng X và Y
+            gradient_x = sum(sum(window .* sobel_x));  % Gradient theo hướng X
+            gradient_y = sum(sum(window .* sobel_y));  % Gradient theo hướng Y
+
+            % Tính độ lớn gradient (magnitude)
+            edge_sobel(r, c) = sqrt(gradient_x^2 + gradient_y^2);
+        end
+    end
+
+    % Hiển thị ảnh biên Sobel
+    figure;
+    imshow(uint8(edge_sobel));
+    title('Biên Sobel');
+    % Dừng đo thời gian và lưu kết quả
+    imgSobel = uint8(edge_sobel);
+    computationTime = toc(t);
+end

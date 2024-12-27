@@ -1,0 +1,48 @@
+function [computationTime, imgRobert] = Robert(img)
+    % Bắt đầu đo thời gian
+    t = tic;
+    
+    % Kiểm tra xem ảnh có phải ảnh màu hay không và chuyển sang ảnh xám nếu cần
+    if size(img, 3) == 3
+        img = rgb2gray(img); % Chuyển ảnh màu sang ảnh xám
+    end
+
+    % Chuyển ảnh sang kiểu double để dễ dàng tính toán
+    img = double(img);
+
+    % Kích thước của ảnh
+    [numRows, numCols] = size(img);
+
+    % Bộ lọc Robert theo hướng X và Y
+    robert_x = [1 0; 0 -1];  % Bộ lọc Robert theo hướng X
+    robert_y = [0 1; -1 0];  % Bộ lọc Robert theo hướng Y
+
+    % Khởi tạo ảnh đầu ra
+    edge_robert = zeros(numRows, numCols);
+
+    % Duyệt qua ảnh (trừ biên)
+    for r = 1:numRows-1
+        for c = 1:numCols-1
+            % Cắt cửa sổ 2x2 quanh pixel (r, c)
+            window = img(r:r+1, c:c+1);
+
+            % Áp dụng bộ lọc Robert theo hướng X và Y
+            gradient_x = sum(sum(window .* robert_x));  % Gradient theo hướng X
+            gradient_y = sum(sum(window .* robert_y));  % Gradient theo hướng Y
+
+            % Tính độ lớn gradient (magnitude)
+            edge_robert(r, c) = sqrt(gradient_x^2 + gradient_y^2);
+        end
+    end
+
+    % Chuyển đổi ảnh đầu ra về kiểu uint8 nếu cần
+    imgRobert = uint8(edge_robert);
+
+    % Hiển thị ảnh biên Robert
+    figure;
+    imshow(imgRobert);
+    title('Edge Detection using Robert Filter');
+    
+    % Dừng đo thời gian và lưu kết quả
+    computationTime = toc(t);
+end

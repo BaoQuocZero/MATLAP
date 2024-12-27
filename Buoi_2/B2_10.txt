@@ -1,0 +1,25 @@
+% a. Nạp ảnh và gây nhiễu 'muối-tiêu'
+i = imread('coins.png'); % Nạp ảnh
+i_noise_sp = imnoise(i, 'salt & pepper', 0.03); % Gây nhiễu muối-tiêu với 3%
+figure;
+
+subplot(2, 2, 1);
+imshow(i);
+title('Ảnh gốc');
+
+subplot(2, 2, 2);
+imshow(i_noise_sp);
+title('Ảnh nhiễu muối-tiêu (3%)');
+
+% b. Lọc trung vị ảnh nhiễu muối-tiêu
+i_filtered_sp = medfilt2(i_noise_sp); % Lọc trung vị
+subplot(2, 2, 3);
+imshow(i_filtered_sp);
+title('Ảnh sau lọc trung vị (nhiễu muối-tiêu)');
+
+% c. Gây nhiễu 'Gaussian' và lọc ảnh
+i_noise_gaussian = imnoise(i, 'gaussian', 0, 0.02); % Gây nhiễu Gaussian với 2%
+i_filtered_gaussian = medfilt2(i_noise_gaussian); % Lọc trung vị ảnh Gaussian
+subplot(2, 2, 4);
+imshow(i_filtered_gaussian);
+title('Ảnh sau lọc trung vị (nhiễu Gaussian)');

@@ -1,0 +1,38 @@
+image = imread('cameraman.tif');  % Đọc ảnh
+if size(image, 3) == 3
+    image = rgb2gray(image);  % Chuyển sang ảnh xám nếu ảnh là màu
+end
+
+% Đảm bảo ảnh là ảnh xám và chuyển sang kiểu double
+image = double(image);
+
+% Kích thước của ảnh
+[numRows, numCols] = size(image);
+
+% Bộ lọc Robert theo hướng X và Y
+robert_x = [1 0; 0 -1];  % Bộ lọc Robert theo hướng X
+robert_y = [0 1; -1 0];  % Bộ lọc Robert theo hướng Y
+
+% Khởi tạo ảnh đầu ra
+edge_robert = zeros(numRows, numCols);
+
+% Duyệt qua ảnh (trừ biên)
+for r = 1:numRows-1
+    for c = 1:numCols-1
+        % Cắt cửa sổ 2x2 quanh pixel (r, c)
+        window = image(r:r+1, c:c+1);
+        
+        % Áp dụng bộ lọc Robert theo hướng X và Y
+        gradient_x = sum(sum(window .* robert_x));  % Gradient theo hướng X
+        gradient_y = sum(sum(window .* robert_y));  % Gradient theo hướng Y
+        
+        % Tính độ lớn gradient (magnitude)
+        edge_robert(r, c) = sqrt(gradient_x^2 + gradient_y^2);
+    end
+end
+
+% Chuyển đổi ảnh đầu ra về kiểu uint8 nếu cần
+edge_robert = uint8(edge_robert);
+
+% Hiển thị kết quả
+imshow(edge_robert);

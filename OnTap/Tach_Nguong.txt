@@ -1,0 +1,11 @@
+% Đọc ảnh gốc
+img = imread('cameraman.tif');
+
+% Tách ngưỡng
+T = 100; % Ngưỡng (giá trị mức xám)
+threshold_img = img > T; % Tách ngưỡng thành ảnh nhị phân
+
+% Hiển thị ảnh
+figure;
+subplot(1, 2, 1), imshow(img), title('Ảnh gốc');
+subplot(1, 2, 2), imshow(threshold_img), title(['Ảnh tách ngưỡng (T = ', num2str(T), ')']);
