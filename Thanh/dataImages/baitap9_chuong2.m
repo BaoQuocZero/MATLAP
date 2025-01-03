@@ -7,7 +7,7 @@ if size(i, 3) == 3
 end
 
 % 2. Xây d?ng m?t n? l?c w (m?t n? 3x3 v?i m?i ph?n t? = 1/9)
-w = ones(3, 3) / 9;  % M?t n? l?c v?i t?ng các ph?n t? b?ng 9
+w = ones(3, 3) / 3;  % M?t n? l?c v?i t?ng các ph?n t? b?ng 9
 
 % 3. Áp d?ng l?c tuy?n tính (dùng Correlation ho?c Convolution)
 g = imfilter(i, w, 'corr', 'replicate', 'same');  % L?c v?i Correlation, biên 'replicate', kích th??c 'same'

@@ -1,6 +1,6 @@
 % a. ??c ?nh g?c
 r = imread('Fig0304(a)(breast_digital_Xray).tif');  % ??c ?nh g?c (dùng hàm imread)
-
+imshow(r);
 % b. Phân tích s? phân b? m?c xám c?a ?nh
 % V? histogram c?a ?nh g?c
 figure;
