@@ -1,0 +1,86 @@
+% Đọc ảnh vào
+f = imread('Fig1005(a)(wirebond_mask).tif');
+
+% Chuyển ảnh sang ảnh xám nếu ảnh là ảnh màu
+if size(f, 3) == 3
+    f = rgb2gray(f);  % Chuyển ảnh màu sang ảnh xám
+end
+
+% Kích thước ảnh
+[rows, cols] = size(f);
+
+% Bộ lọc phát hiện biên ngang (vertical edge)
+w1 = [-1 -1 -1; 2 2 2; -1 -1 -1];  % Bộ lọc phát hiện biên ngang
+
+% Tạo ảnh kết quả (mới) với cùng kích thước ảnh gốc, khởi tạo với giá trị 0
+g1 = zeros(rows, cols);
+
+% Thực hiện phép toán chập cho bộ lọc w1
+for i = 2:rows-1
+    for j = 2:cols-1
+        % Lấy vùng ảnh 3x3
+        region = f(i-1:i+1, j-1:j+1);
+        % Thực hiện phép toán chập (convolution) giữa vùng ảnh và bộ lọc w1
+        g1(i,j) = sum(sum(double(region) .* w1)); % Phép nhân ma trận và cộng các phần tử
+    end
+end
+
+% Chuyển ảnh kết quả về dạng uint8
+g1 = uint8(g1);
+
+% Hiển thị ảnh gốc và ảnh sau khi lọc (phát hiện biên theo hướng ngang)
+subplot(2,2,1);
+imshow(f);
+title('Ảnh gốc');
+
+subplot(2,2,2);
+imshow(g1);
+title('Biên theo hướng ngang (từ chập)');
+
+% Bộ lọc phát hiện biên theo hướng dọc (horizontal edge)
+w2 = [-1 2 -1; -1 2 -1; -1 2 -1];  % Bộ lọc phát hiện biên dọc
+
+% Tạo ảnh kết quả cho bộ lọc w2
+g2 = zeros(rows, cols);
+
+% Thực hiện phép toán chập cho bộ lọc w2
+for i = 2:rows-1
+    for j = 2:cols-1
+        % Lấy vùng ảnh 3x3
+        region = f(i-1:i+1, j-1:j+1);
+        % Thực hiện phép toán chập giữa vùng ảnh và bộ lọc w2
+        g2(i,j) = sum(sum(double(region) .* w2)); % Phép nhân ma trận và cộng các phần tử
+    end
+end
+
+% Chuyển ảnh kết quả về dạng uint8
+g2 = uint8(g2);
+
+% Hiển thị ảnh sau khi lọc với bộ lọc phát hiện biên dọc
+subplot(2,2,3);
+imshow(g2);
+title('Biên theo hướng dọc (từ chập)');
+
+% Bộ lọc phát hiện biên theo góc +45° (diagonal edge)
+w3 = [0 0 -1; 0 2 0; 1 0 0];  % Bộ lọc phát hiện biên góc +45°
+
+% Tạo ảnh kết quả cho bộ lọc w3
+g3 = zeros(rows, cols);
+
+% Thực hiện phép toán chập cho bộ lọc w3
+for i = 2:rows-1
+    for j = 2:cols-1
+        % Lấy vùng ảnh 3x3
+        region = f(i-1:i+1, j-1:j+1);
+        % Thực hiện phép toán chập giữa vùng ảnh và bộ lọc w3
+        g3(i,j) = sum(sum(double(region) .* w3)); % Phép nhân ma trận và cộng các phần tử
+    end
+end
+
+% Chuyển ảnh kết quả về dạng uint8
+g3 = uint8(g3);
+
+% Hiển thị ảnh sau khi lọc với bộ lọc phát hiện biên góc +45°
+subplot(2,2,4);
+imshow(g3);
+title('Biên theo góc +45° (từ chập)');

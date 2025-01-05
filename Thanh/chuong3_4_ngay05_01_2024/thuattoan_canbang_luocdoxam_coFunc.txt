@@ -1,0 +1,29 @@
+% Đọc ảnh
+img = imread('Fig0316(4)(bottom_left).tif');  % Thay 'image.jpg' bằng đường dẫn ảnh của bạn
+
+% Nếu ảnh là ảnh màu, chuyển sang ảnh xám
+if size(img, 3) == 3
+    img = rgb2gray(img);
+end
+
+% Cân bằng histogram sử dụng hàm histeq
+new_img = histeq(img);
+
+% Hiển thị ảnh gốc và ảnh sau khi cân bằng histogram
+subplot(1, 2, 1);
+imshow(img);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(new_img);
+title('Ảnh sau khi cân bằng histogram');
+
+% Vẽ histogram trước và sau khi cân bằng
+figure;
+subplot(1, 2, 1);
+imhist(img);
+title('Histogram ảnh gốc');
+
+subplot(1, 2, 2);
+imhist(new_img);
+title('Histogram sau khi cân bằng');

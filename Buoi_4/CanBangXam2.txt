@@ -1,0 +1,67 @@
+%Bước 1: Đọc ảnh và kiểm tra ảnh màu
+i = imread('Fig0316(4)(bottom_left).tif');
+
+if size(i, 3) == 3
+    i = rgb2gray(i);
+end
+
+%Dòng lệnh imread đọc ảnh từ file và lưu vào biến i.
+%Kiểm tra xem ảnh có phải là ảnh màu RGB không (3 kênh màu). Nếu đúng, chuyển ảnh về ảnh xám bằng hàm rgb2gray.
+
+[N, M] = size(i); %N số dòng, M số cột của ảnh i
+L = 256;  % Số mức xám, tối đa từ 0-255 có 256 mức xám
+
+%Bước 2: Tính lược đồ xám gốc (Histogram)
+%hist_orig là mảng lưu số lần xuất hiện của từng mức xám trong ảnh.
+hist_orig = zeros(1, L); %Số lần xuất hiện của 1 mức xám cụ thể
+for x = 1:N
+    for y = 1:M
+        hist_orig(i(x, y) + 1) = hist_orig(i(x, y) + 1) + 1;
+    end
+end
+%Sử dụng 2 vòng lặp for để duyệt qua từng pixel trong ảnh và cập nhật số lần xuất hiện của mức xám tương ứng.
+%Lưu ý, vì giá trị của pixel bắt đầu từ 0 đến 255 nên phải cộng thêm 1 khi truy cập vào mảng hist_orig.
+
+%Bước 3: Tính hàm phân phối tích lũy (CDF)
+cdf = zeros(1, L); %Khởi tạo mảng CDF. Tổng mức xám tích lũy từ 0 đến k
+cdf(1) = hist_orig(1); % Giá trị ban đầu của CDF
+for k = 2:L
+    cdf(k) = cdf(k-1) + hist_orig(k); % Cập nhật CDF cho mỗi mức xám
+end
+cdf = cdf / (N * M);  % Chuẩn hóa CDF, sau khi chuẩn hóa ta có tỷ lệ xuất hiện của 1 mức xám cụ thể
+%cdf(k) là tổng tần suất của các mức xám từ mức 0 đến k.
+%Sau khi tính xong CDF, ta chuẩn hóa nó bằng cách chia cho tổng số pixel trong ảnh (N * M), giúp CDF trở thành xác suất của các mức xám.
+
+%Bước 4: Ánh xạ CDF vào các mức xám mới
+s = round(cdf * (L - 1));  % Ánh xạ CDF vào khoảng 0–255, Hàm round được sử dụng để làm tròn kết quả về số nguyên
+
+%Bước 5: Tạo ảnh mới sau khi cân bằng
+i_equalized = zeros(N, M, 'uint8');
+for x = 1:N
+    for y = 1:M
+        i_equalized(x, y) = s(i(x, y) + 1);
+    end
+end
+%Khởi tạo ảnh mới i_equalized để lưu kết quả sau khi cân bằng lược đồ xám.
+%Duyệt qua từng pixel của ảnh và ánh xạ giá trị mức xám gốc sang mức xám mới sử dụng mảng s.
+
+%Bước 6: Tính histogram sau cân bằng
+hist_equalized = zeros(1, L);
+for x = 1:N
+    for y = 1:M
+        hist_equalized(i_equalized(x, y) + 1) = hist_equalized(i_equalized(x, y) + 1) + 1;
+    end
+end
+%Tính lại lược đồ xám cho ảnh sau khi cân bằng (i_equalized).
+
+%Bước 7: Hiển thị kết quả
+figure;
+subplot(2, 2, 1); imshow(i); title('Anh goc');
+subplot(2, 2, 2); bar(0:L-1, hist_orig); title('Histogram goc');
+subplot(2, 2, 3); imshow(i_equalized); title('Anh sau can bang');
+subplot(2, 2, 4); bar(0:L-1, hist_equalized); title('Histogram sau can bang');
+% Hiển thị 4 hình trong một cửa sổ:
+% Ảnh gốc.
+% Lược đồ xám gốc.
+% Ảnh sau khi cân bằng.
+% Lược đồ xám sau khi cân bằng.

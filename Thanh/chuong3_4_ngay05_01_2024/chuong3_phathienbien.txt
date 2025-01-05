@@ -1,0 +1,50 @@
+% Đọc ảnh từ file
+f = imread('Fig1005(a)(wirebond_mask).tif');
+
+% Kiểm tra nếu ảnh là ảnh màu, nếu có thì chuyển thành ảnh xám
+if size(f, 3) == 3
+    f = rgb2gray(f);  % Chuyển ảnh màu sang ảnh xám
+end
+
+% Mặt nạ phát hiện biên theo phương ngang (vertical edges)
+% Mặt nạ này có trọng số âm ở hai bên và trọng số dương ở giữa, 
+% giúp phát hiện biên theo chiều ngang
+w1 = [-1 -1 -1; 2 2 2; -1 -1 -1];  % Mặt nạ phát hiện biên ngang
+
+% Thực hiện lọc ảnh với mặt nạ w1 (phát hiện biên theo phương ngang)
+g1 = imfilter(f, w1);  % Ứng dụng mặt nạ w1 vào ảnh
+
+% Hiển thị ảnh gốc và ảnh sau khi lọc theo phương ngang
+subplot(2, 2, 1);  % Vị trí của ô trong cửa sổ subplot
+imshow(f);  % Hiển thị ảnh gốc
+title('Ảnh gốc');  % Tiêu đề cho ảnh gốc
+
+subplot(2, 2, 2);  % Vị trí của ô trong cửa sổ subplot
+imshow(g1);  % Hiển thị ảnh sau khi phát hiện biên theo phương ngang
+title('Biên theo phương ngang');  % Tiêu đề cho ảnh biên ngang
+
+% Mặt nạ phát hiện biên theo phương dọc (horizontal edges)
+% Mặt nạ này có trọng số âm ở các cột bên trái và phải, và trọng số dương ở cột giữa,
+% giúp phát hiện biên theo chiều dọc
+w2 = [-1 2 -1; -1 2 -1; -1 2 -1];  % Mặt nạ phát hiện biên dọc
+
+% Thực hiện lọc ảnh với mặt nạ w2 (phát hiện biên theo phương dọc)
+g2 = imfilter(f, w2);  % Ứng dụng mặt nạ w2 vào ảnh
+
+% Hiển thị ảnh sau khi lọc theo phương dọc
+subplot(2, 2, 3);  % Vị trí của ô trong cửa sổ subplot
+imshow(g2);  % Hiển thị ảnh sau khi phát hiện biên theo phương dọc
+title('Biên theo phương dọc');  % Tiêu đề cho ảnh biên dọc
+
+% Mặt nạ phát hiện biên theo góc +45° (diagonal edges)
+% Mặt nạ này có trọng số âm ở góc trái dưới và trọng số dương ở góc phải trên,
+% giúp phát hiện biên theo góc +45°.
+w3 = [0 0 -1; 0 2 0; 1 0 0];  % Mặt nạ phát hiện biên góc +45°
+
+% Thực hiện lọc ảnh với mặt nạ w3 (phát hiện biên theo góc +45°)
+g3 = imfilter(f, w3);  % Ứng dụng mặt nạ w3 vào ảnh
+
+% Hiển thị ảnh sau khi lọc theo góc +45°
+subplot(2, 2, 4);  % Vị trí của ô trong cửa sổ subplot
+imshow(g3);  % Hiển thị ảnh sau khi phát hiện biên theo góc +45°
+title('Biên theo góc +45°');  % Tiêu đề cho ảnh biên góc +45°

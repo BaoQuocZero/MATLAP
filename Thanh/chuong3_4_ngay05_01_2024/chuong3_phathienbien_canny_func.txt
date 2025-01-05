@@ -1,0 +1,46 @@
+% Đọc ảnh từ file
+f = imread('Fig1005(a)(wirebond_mask).tif');
+
+% Kiểm tra nếu ảnh là ảnh màu, nếu có thì chuyển thành ảnh xám
+if size(f, 3) == 3
+    f = rgb2gray(f);  % Chuyển ảnh màu sang ảnh xám
+end
+
+% Lấy kích thước của ảnh (số hàng và số cột)
+[rows, cols] = size(f);
+
+% Bước 1: Lọc biên với mặt nạ logarit
+% Tạo mặt nạ logarit 3x3 để phát hiện biên
+log_mask = [-1 -1 -1; -1 8 -1; -1 -1 -1];  % Mặt nạ logarit, giúp phát hiện biên
+
+% Tạo ảnh kết quả (mới) với kích thước giống ảnh gốc, khởi tạo giá trị 0
+g_log = zeros(rows, cols);
+
+% Thực hiện phép toán chập (convolution) cho mặt nạ logarit
+for i = 2:rows-1
+    for j = 2:cols-1
+        % Lấy vùng ảnh 3x3 xung quanh pixel (i, j)
+        region = f(i-1:i+1, j-1:j+1);  
+        
+        % Thực hiện phép toán chập (convolution) giữa vùng ảnh và mặt nạ logarit
+        % Tính giá trị pixel mới sau khi áp dụng mặt nạ
+        g_log(i,j) = sum(sum(double(region) .* log_mask));  % Nhân ma trận và cộng các phần tử
+    end
+end
+
+% Chuyển ảnh kết quả sang kiểu uint8 để hiển thị
+g_log = uint8(g_log);
+
+% Hiển thị ảnh sau khi lọc với mặt nạ logarit
+subplot(1, 2, 1);  % Vị trí hiển thị ảnh trong cửa sổ subplot (1 hàng, 2 cột, ô đầu tiên)
+imshow(g_log);  % Hiển thị ảnh đã xử lý với mặt nạ logarit
+title('Biên với mặt nạ logarit');  % Tiêu đề cho ảnh
+
+% Bước 2: Lọc biên với phương pháp Canny
+% Sử dụng hàm edge với phương pháp Canny để phát hiện biên
+g_canny = edge(f, 'Canny');  % Phát hiện biên bằng Canny
+
+% Hiển thị ảnh sau khi phát hiện biên bằng phương pháp Canny
+subplot(1, 2, 2);  % Vị trí hiển thị ảnh trong cửa sổ subplot (1 hàng, 2 cột, ô thứ hai)
+imshow(g_canny);  % Hiển thị ảnh đã xử lý với Canny
+title('Biên với Canny');  % Tiêu đề cho ảnh

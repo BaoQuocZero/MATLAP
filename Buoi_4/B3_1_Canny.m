@@ -1,0 +1,18 @@
+A=imread('trui.png');
+subplot(3,3,1), imshow(A,[]);
+h1=fspecial('gaussian',[15 15],6);
+h2=fspecial('gaussian',[30 30],12);
+subplot(3,3,4), imshow(imfilter(A,h1),[]);
+subplot(3,3,7), imshow(imfilter(A,h2),[]);
+[bw,thresh]=edge(A,'log');
+subplot(3,3,2), imshow(bw,[]);
+[bw,thresh]=edge(A,'canny');
+subplot(3,3,3), imshow(bw,[]);
+[bw,thresh]=edge(imfilter(A,h1),'log');
+subplot(3,3,5), imshow(bw,[]);
+[bw,thresh]=edge(imfilter(A,h1),'canny');
+subplot(3,3,6), imshow(bw,[]);
+[bw,thresh]=edge(imfilter(A,h2),'log');
+subplot(3,3,8), imshow(bw,[]);
+[bw,thresh]=edge(imfilter(A,h2),'canny');
+subplot(3,3,9), imshow(bw,[]);

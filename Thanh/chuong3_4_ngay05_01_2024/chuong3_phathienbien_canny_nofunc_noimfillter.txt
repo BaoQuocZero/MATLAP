@@ -1,0 +1,87 @@
+% Đọc ảnh từ file
+f = imread('Fig1005(a)(wirebond_mask).tif');
+
+% Chuyển ảnh màu sang ảnh xám nếu ảnh là ảnh màu
+if size(f, 3) == 3
+    f = rgb2gray(f);  % Chuyển ảnh màu sang ảnh xám
+end
+
+% Bước 1: Làm mịn ảnh với bộ lọc Gaussian
+sigma = 1;  % Đặt độ lệch chuẩn của bộ lọc Gaussian
+h = fspecial('gaussian', [5, 5], sigma);  % Tạo bộ lọc Gaussian 5x5 với sigma = 1
+f_smooth = imfilter(f, h, 'same');  % Áp dụng bộ lọc Gaussian lên ảnh, giữ lại kích thước ảnh ban đầu
+
+% Bước 2: Tính toán gradient của ảnh bằng bộ lọc Sobel
+sobel_x = fspecial('sobel');  % Bộ lọc Sobel theo phương x (ngang)
+sobel_y = sobel_x';  % Bộ lọc Sobel theo phương y (dọc)
+
+% Tính gradient theo phương x và y
+gradient_x = imfilter(double(f_smooth), sobel_x, 'same');  % Tính gradient theo phương x
+gradient_y = imfilter(double(f_smooth), sobel_y, 'same');  % Tính gradient theo phương y
+
+% Tính độ lớn gradient và hướng gradient
+gradient_magnitude = sqrt(gradient_x.^2 + gradient_y.^2);  % Độ lớn của gradient
+gradient_direction = atan2(gradient_y, gradient_x);  % Hướng của gradient (theo radian)
+
+% Bước 3: Non-maximum suppression
+[rows, cols] = size(gradient_magnitude);  % Lấy kích thước ảnh
+nms = zeros(rows, cols);  % Tạo ảnh kết quả sau khi áp dụng non-maximum suppression
+
+for i = 2:rows-1
+    for j = 2:cols-1
+        % Lấy hướng gradient và chuyển từ radian sang độ (degree)
+        angle = gradient_direction(i, j) * 180 / pi;  
+        angle = mod(angle, 180);  % Làm cho góc nằm trong khoảng [0, 180]
+
+        % So sánh gradient tại pixel hiện tại với các pixel liền kề
+        if (angle >= 0 && angle < 22.5) || (angle >= 157.5 && angle <= 180)
+            % Hướng 0 độ (ngang), so sánh với pixel bên trái và bên phải
+            neighbor1 = gradient_magnitude(i, j+1);
+            neighbor2 = gradient_magnitude(i, j-1);
+        elseif (angle >= 22.5 && angle < 67.5)
+            % Hướng 45 độ, so sánh với pixel chéo trên phải và chéo dưới trái
+            neighbor1 = gradient_magnitude(i-1, j+1);
+            neighbor2 = gradient_magnitude(i+1, j-1);
+        elseif (angle >= 67.5 && angle < 112.5)
+            % Hướng 90 độ (dọc), so sánh với pixel trên và dưới
+            neighbor1 = gradient_magnitude(i+1, j);
+            neighbor2 = gradient_magnitude(i-1, j);
+        elseif (angle >= 112.5 && angle < 157.5)
+            % Hướng 135 độ, so sánh với pixel chéo trên trái và chéo dưới phải
+            neighbor1 = gradient_magnitude(i-1, j-1);
+            neighbor2 = gradient_magnitude(i+1, j+1);
+        end
+        
+        % Nếu độ lớn gradient tại pixel hiện tại lớn hơn hoặc bằng các pixel liền kề, giữ lại giá trị
+        if (gradient_magnitude(i, j) >= neighbor1) && (gradient_magnitude(i, j) >= neighbor2)
+            nms(i, j) = gradient_magnitude(i, j);
+        else
+            nms(i, j) = 0;  % Nếu không, gán giá trị 0
+        end
+    end
+end
+
+% Bước 4: Hysteresis Thresholding
+high_threshold = 0.3 * max(nms(:));  % Ngưỡng cao (30% giá trị lớn nhất)
+low_threshold = 0.1 * max(nms(:));   % Ngưỡng thấp (10% giá trị lớn nhất)
+
+final_edges = zeros(rows, cols);  % Khởi tạo ảnh biên cuối cùng
+
+% Kiểm tra biên mạnh và yếu
+for i = 1:rows
+    for j = 1:cols
+        if nms(i, j) >= high_threshold
+            final_edges(i, j) = 1;  % Biên mạnh
+        elseif nms(i, j) >= low_threshold
+            % Nếu là biên yếu, kiểm tra các pixel lân cận để nối thành biên mạnh
+            if any(nms(i-1:i+1, j-1:j+1) >= high_threshold)
+                final_edges(i, j) = 1;  % Biên yếu được nối thành biên mạnh
+            end
+        end
+    end
+end
+
+% Hiển thị kết quả
+subplot(1, 2, 1);  % Vị trí hiển thị ảnh trong cửa sổ subplot (1 hàng, 2 cột, ô đầu tiên)
+imshow(final_edges);  % Hiển thị ảnh biên sau khi phát hiện với Canny
+title('Biên phát hiện với Canny (không dùng imfilter hoặc edge())');  % Tiêu đề cho ảnh

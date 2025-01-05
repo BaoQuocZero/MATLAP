@@ -1,4 +1,4 @@
-function [computationTime, imgSobel] = Sobel(img)
+function [computationTime] = Sobel(img)
 % B?t ??u ?o th?i gian
     t = tic;
     % Ki?m tra xem ?nh có ph?i ?nh màu hay không và chuy?n sang ?nh xám n?u c?n
@@ -42,6 +42,5 @@ function [computationTime, imgSobel] = Sobel(img)
     imshow(uint8(edge_sobel));
     title('Biên Sobel');
     % D?ng ?o th?i gian và l?u k?t qu?
-    imgSobel = uint8(edge_sobel);
     computationTime = toc(t);
 end

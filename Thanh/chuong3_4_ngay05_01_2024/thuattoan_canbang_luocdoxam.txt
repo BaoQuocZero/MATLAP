@@ -1,0 +1,57 @@
+% Đọc ảnh
+img = imread('Fig0316(4)(bottom_left).tif');  % Thay 'image.jpg' bằng đường dẫn ảnh của bạn
+
+% Nếu ảnh là ảnh màu, chuyển sang ảnh xám
+if size(img, 3) == 3
+    img = rgb2gray(img);
+end
+
+% Kích thước ảnh
+[rows, cols] = size(img);
+
+% Bước 1: Tính histogram thô
+histogram = zeros(1, 256);  % Mảng lưu trữ tần suất xuất hiện của các giá trị xám (0-255)
+
+% Duyệt qua tất cả các pixel để tính histogram
+for i = 1:rows
+    for j = 1:cols
+        pixelValue = img(i, j);  % Lấy giá trị pixel tại (i, j)
+        histogram(pixelValue + 1) = histogram(pixelValue + 1) + 1;  % Cập nhật tần suất
+    end
+end
+
+% Bước 2: Tính CDF (Cumulative Distribution Function)
+cdf = cumsum(histogram) / (rows * cols);  % CDF chuẩn hóa (tổng tần suất chia cho tổng số pixel)
+
+% Bước 3: Áp dụng công thức chuyển đổi giá trị xám
+new_img = uint8(255 * cdf(double(img) + 1));
+
+% Bước 4: Hiển thị ảnh gốc và ảnh sau khi cân bằng histogram
+subplot(1, 2, 1);
+imshow(img);
+title('Ảnh gốc');
+
+subplot(1, 2, 2);
+imshow(new_img);
+title('Ảnh sau khi cân bằng histogram');
+
+% Bước 5: Hiển thị histogram trước và sau khi cân bằng
+
+% Tính histogram của ảnh mới sau khi cân bằng
+new_histogram = zeros(1, 256);
+for i = 1:rows
+    for j = 1:cols
+        pixelValue = new_img(i, j);
+        new_histogram(pixelValue + 1) = new_histogram(pixelValue + 1) + 1;
+    end
+end
+
+% Vẽ biểu đồ histogram của ảnh gốc và ảnh đã cân bằng
+figure;
+subplot(1, 2, 1);
+bar(0:255, histogram);
+title('Histogram ảnh gốc');
+
+subplot(1, 2, 2);
+bar(0:255, new_histogram);
+title('Histogram sau khi cân bằng');
